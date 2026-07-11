@@ -15,6 +15,10 @@ from memoriaos.domain import (
     Provenance,
 )
 
+from memoriaos.repository import (
+    ObservationRepository,
+)
+
 PIPELINE_NAME = "OBS-PIPELINE-001"
 
 SUPPORTED_SOURCES = (
@@ -135,51 +139,6 @@ def repository_root() -> Path:
     return repository
 
 
-def publish(observation: Observation) -> Path:
-
-    observations = repository_root() / "Observations"
-
-    observations.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
-
-    timestamp = observation.created.strftime("%Y%m%d-%H%M%S")
-
-    filename = (
-        observations /
-        f"{timestamp}-{observation.id}.md"
-    )
-
-    content = f"""# Observation
-
-id: {observation.id}
-
-created: {observation.created.isoformat()}
-
-source: {observation.provenance.source_type}
-
-source_identifier: {observation.provenance.source_identifier}
-
-captured_at: {observation.provenance.captured_at.isoformat()}
-
-captured_by: {observation.provenance.captured_by}
-
-status: raw
-
----
-
-{observation.text}
-"""
-
-    filename.write_text(
-        content,
-        encoding="utf-8",
-    )
-
-    return filename
-
-
 # ---------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------
@@ -198,7 +157,13 @@ def main() -> int:
 
     observation = create_observation(unit)
 
-    filename = publish(observation)
+    repository = ObservationRepository(
+        repository_root()
+    )
+
+    filename = repository.save(
+        observation
+    )
 
     log(f"Source : {observation.provenance.source_type}")
     log(f"Source ID : {observation.provenance.source_identifier}")
