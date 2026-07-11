@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
 
+from __future__ import annotations
+
+from datetime import UTC, datetime
 from pathlib import Path
-from datetime import datetime
 import uuid
+
+
+PIPELINE_NAME = "OBS-PIPELINE-001"
+
+
+def log(message: str) -> None:
+    print(f"[{PIPELINE_NAME}] {message}")
 
 
 def repository_root() -> Path:
@@ -22,26 +31,27 @@ def repository_root() -> Path:
     return repo
 
 
-def write_test_observation():
+def create_observation_file() -> Path:
 
     repo = repository_root()
 
     observations = repo / "Observations"
 
-    observations.mkdir(exist_ok=True)
+    observations.mkdir(parents=True, exist_ok=True)
 
     observation_id = uuid.uuid4()
 
-    timestamp = datetime.utcnow().strftime("%Y%m%d-%H%M%S")
+    now = datetime.now(UTC)
+
+    timestamp = now.strftime("%Y%m%d-%H%M%S")
 
     filename = observations / f"{timestamp}-{observation_id}.md"
 
-    filename.write_text(
-f"""# Observation
+    content = f"""# Observation
 
 id: {observation_id}
 
-created: {datetime.utcnow().isoformat()}Z
+created: {now.isoformat()}
 
 status: test
 
@@ -49,13 +59,26 @@ status: test
 
 This is the first Observation created by MemoriaOS.
 """
-    )
 
-    print(f"Observation written to:")
+    filename.write_text(content, encoding="utf-8")
 
-    print(filename)
+    return filename
+
+
+def main() -> int:
+
+    log("Starting pipeline...")
+
+    file = create_observation_file()
+
+    log(f"Observation written:")
+
+    log(str(file))
+
+    log("Done.")
+
+    return 0
 
 
 if __name__ == "__main__":
-
-    write_test_observation()
+    raise SystemExit(main())
