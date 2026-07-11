@@ -1,0 +1,10 @@
+version: 1
+
+id: obs-pipeline-001
+
+name: Observation Pipeline
+
+description: >
+  Receives an Observation and stores it in the repository.
+
+steps: []
