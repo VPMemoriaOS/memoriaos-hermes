@@ -13,6 +13,7 @@
 - Keep implementation deterministic where practical.
 - Preserve provenance.
 - Add tests for every new process.
+- Python scripts are executed with python3, not as executable files. Do not commit executable permission changes unless they are intentionally required.
 
 ## Commit Style
 
