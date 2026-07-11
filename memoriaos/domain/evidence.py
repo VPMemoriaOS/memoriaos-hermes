@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Tuple
+from uuid import UUID
 
 
 @dataclass(frozen=True, slots=True)
@@ -12,6 +12,8 @@ class Evidence:
     Evidence is immutable and may later support one or more Claims.
     """
 
-    id: str
+    id: UUID
+
     content: str
-    observation_ids: Tuple[str, ...]
+
+    observation_ids: tuple[UUID, ...]
