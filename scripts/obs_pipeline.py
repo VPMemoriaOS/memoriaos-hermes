@@ -2,22 +2,53 @@
 
 from __future__ import annotations
 
+import argparse
+import sys
+import uuid
+
 from datetime import UTC, datetime
 from pathlib import Path
-import uuid
 
 
 PIPELINE_NAME = "OBS-PIPELINE-001"
+
+SUPPORTED_SOURCES = (
+    "manual",
+    "telegram",
+    "email",
+    "webhook",
+    "cron",
+    "api",
+)
 
 
 def log(message: str) -> None:
     print(f"[{PIPELINE_NAME}] {message}")
 
 
+def parse_arguments() -> argparse.Namespace:
+
+    parser = argparse.ArgumentParser(
+        description="MemoriaOS Observation Pipeline"
+    )
+
+    parser.add_argument(
+        "--source",
+        required=True,
+        choices=SUPPORTED_SOURCES,
+        help="Origin of the observation.",
+    )
+
+    parser.add_argument(
+        "--text",
+        required=True,
+        help="Observation text.",
+    )
+
+    return parser.parse_args()
+
+
 def repository_root() -> Path:
-    """
-    Locate memoria-repository next to memoriaos-hermes.
-    """
 
     current = Path(__file__).resolve()
 
@@ -26,18 +57,14 @@ def repository_root() -> Path:
     repo = workspace / "memoria-repository"
 
     if not repo.exists():
-        raise RuntimeError(f"Repository not found: {repo}")
+        raise RuntimeError(
+            f"Repository not found: {repo}"
+        )
 
     return repo
 
 
-def create_observation_file() -> Path:
-
-    repo = repository_root()
-
-    observations = repo / "Observations"
-
-    observations.mkdir(parents=True, exist_ok=True)
+def build_filename() -> tuple[str, uuid.UUID]:
 
     observation_id = uuid.uuid4()
 
@@ -45,7 +72,30 @@ def create_observation_file() -> Path:
 
     timestamp = now.strftime("%Y%m%d-%H%M%S")
 
-    filename = observations / f"{timestamp}-{observation_id}.md"
+    filename = f"{timestamp}-{observation_id}.md"
+
+    return filename, observation_id
+
+
+def write_observation(
+    source: str,
+    text: str,
+) -> Path:
+
+    repo = repository_root()
+
+    observations = repo / "Observations"
+
+    observations.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    filename, observation_id = build_filename()
+
+    now = datetime.now(UTC)
+
+    target = observations / filename
 
     content = f"""# Observation
 
@@ -53,27 +103,36 @@ id: {observation_id}
 
 created: {now.isoformat()}
 
-status: test
+source: {source}
+
+status: raw
 
 ---
 
-This is the first Observation created by MemoriaOS.
+{text}
 """
 
-    filename.write_text(content, encoding="utf-8")
+    target.write_text(
+        content,
+        encoding="utf-8",
+    )
 
-    return filename
+    return target
 
 
 def main() -> int:
 
+    args = parse_arguments()
+
     log("Starting pipeline...")
 
-    file = create_observation_file()
+    file = write_observation(
+        source=args.source,
+        text=args.text,
+    )
 
-    log(f"Observation written:")
-
-    log(str(file))
+    log(f"Source : {args.source}")
+    log(f"Output : {file}")
 
     log("Done.")
 
@@ -81,4 +140,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(main())
