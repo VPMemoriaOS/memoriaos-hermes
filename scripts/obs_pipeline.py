@@ -6,10 +6,14 @@ import argparse
 import sys
 import uuid
 
-from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
+from domain import (
+    CompilationUnit,
+    Observation,
+    Provenance,
+)
 
 PIPELINE_NAME = "OBS-PIPELINE-001"
 
@@ -21,32 +25,6 @@ SUPPORTED_SOURCES = (
     "cron",
     "api",
 )
-
-
-# ---------------------------------------------------------------------
-# Domain model
-# ---------------------------------------------------------------------
-
-@dataclass(slots=True)
-class CompilationUnit:
-    """
-    Raw information entering MemoriaOS.
-    """
-
-    source: str
-    text: str
-
-
-@dataclass(slots=True)
-class Observation:
-    """
-    Canonical Observation produced from a Compilation Unit.
-    """
-
-    id: uuid.UUID
-    created: datetime
-    source: str
-    text: str
 
 
 # ---------------------------------------------------------------------
@@ -75,6 +53,12 @@ def parse_arguments() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--source-id",
+        required=True,
+        help="Unique identifier of the original source.",
+    )
+
+    parser.add_argument(
         "--text",
         required=True,
         help="Observation text.",
@@ -91,6 +75,7 @@ def build_compilation_unit(args: argparse.Namespace) -> CompilationUnit:
 
     return CompilationUnit(
         source=args.source,
+        source_id=args.source_id,
         text=args.text,
     )
 
@@ -100,23 +85,34 @@ def validate(unit: CompilationUnit) -> None:
     if not unit.text.strip():
         raise ValueError("Observation text is empty.")
 
+    if not unit.source_id.strip():
+        raise ValueError("Source identifier is empty.")
+
 
 def canonicalize(unit: CompilationUnit) -> CompilationUnit:
 
-    text = unit.text.strip()
-
     return CompilationUnit(
         source=unit.source,
-        text=text,
+        source_id=unit.source_id.strip(),
+        text=unit.text.strip(),
     )
 
 
 def create_observation(unit: CompilationUnit) -> Observation:
 
+    now = datetime.now(UTC)
+
+    provenance = Provenance(
+        source_type=unit.source,
+        source_identifier=unit.source_id,
+        captured_at=now,
+        captured_by=PIPELINE_NAME,
+    )
+
     return Observation(
         id=uuid.uuid4(),
-        created=datetime.now(UTC),
-        source=unit.source,
+        created=now,
+        provenance=provenance,
         text=unit.text,
     )
 
@@ -129,14 +125,14 @@ def repository_root() -> Path:
 
     workspace = Path(__file__).resolve().parents[2]
 
-    repo = workspace / "memoria-repository"
+    repository = workspace / "memoria-repository"
 
-    if not repo.exists():
+    if not repository.exists():
         raise RuntimeError(
-            f"Repository not found: {repo}"
+            f"Repository not found: {repository}"
         )
 
-    return repo
+    return repository
 
 
 def publish(observation: Observation) -> Path:
@@ -161,7 +157,13 @@ id: {observation.id}
 
 created: {observation.created.isoformat()}
 
-source: {observation.source}
+source: {observation.provenance.source_type}
+
+source_identifier: {observation.provenance.source_identifier}
+
+captured_at: {observation.provenance.captured_at.isoformat()}
+
+captured_by: {observation.provenance.captured_by}
 
 status: raw
 
@@ -198,7 +200,8 @@ def main() -> int:
 
     filename = publish(observation)
 
-    log(f"Source : {observation.source}")
+    log(f"Source : {observation.provenance.source_type}")
+    log(f"Source ID : {observation.provenance.source_identifier}")
     log(f"Output : {filename}")
     log("Done.")
 
