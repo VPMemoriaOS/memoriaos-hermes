@@ -9,7 +9,7 @@ import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
-from domain import (
+from memoriaos.domain import (
     CompilationUnit,
     Observation,
     Provenance,
