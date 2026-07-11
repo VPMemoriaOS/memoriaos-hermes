@@ -1,7 +1,7 @@
 """MemoriaOS processing pipelines."""
 
-from .evidence_pipeline import EvidencePipeline
 from .claim_pipeline import ClaimPipeline
+from .evidence_pipeline import EvidencePipeline
 
 __all__ = [
     "EvidencePipeline",
