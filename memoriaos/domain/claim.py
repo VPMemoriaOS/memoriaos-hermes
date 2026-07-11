@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Tuple
+from uuid import UUID
 
 
 @dataclass(frozen=True, slots=True)
@@ -13,8 +13,12 @@ class Claim:
     artifacts.
     """
 
-    id: str
+    id: UUID
+
     subject: str
+
     predicate: str
+
     object: str
-    evidence_ids: Tuple[str, ...]
+
+    evidence_ids: tuple[UUID, ...]

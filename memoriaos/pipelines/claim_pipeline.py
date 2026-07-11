@@ -25,5 +25,5 @@ class ClaimPipeline:
             subject=parts.subject,
             predicate=parts.predicate,
             object=parts.object,
-            evidence_ids=evidence.observation_ids,
+            evidence_ids=(evidence.id,),
         )
