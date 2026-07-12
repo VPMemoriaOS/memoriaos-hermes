@@ -1,5 +1,5 @@
 from memoriaos.context import MemoryContext
-from memoriaos.domain import Claim, Knowledge
+from memoriaos.domain import Claim, Knowledge, Memory
 from memoriaos.repository import KnowledgeRepository
 
 
@@ -18,12 +18,32 @@ class KnowledgePipeline:
         claim: Claim,
         context: MemoryContext | None = None,
     ) -> Knowledge:
-        # MEMORY-AWARE-001:
-        # Context is accepted but not yet used.
-        _ = context
+        candidate_memories = self._collect_candidate_memories(context)
+
+        # Sprint 4 (S4-001):
+        # Candidate memories are intentionally not yet used.
+        # This stage establishes deterministic memory-aware execution
+        # while preserving existing behaviour.
+        _ = candidate_memories
 
         knowledge = Knowledge.from_claim(claim)
 
         self._repository.save(knowledge)
 
         return knowledge
+
+    def _collect_candidate_memories(
+        self,
+        context: MemoryContext | None,
+    ) -> tuple[Memory, ...]:
+        """
+        Collect candidate memories from the processing context.
+
+        The returned memories are read-only and deterministic.
+        Future Sprint 4 steps will use this collection during
+        knowledge construction.
+        """
+        if context is None:
+            return ()
+
+        return tuple(context.memories)
