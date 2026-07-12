@@ -1,18 +1,21 @@
-from memoriaos import (
-    ClaimPipeline,
-    CompilationUnit,
+from memoriaos.domain import CompilationUnit
+
+from memoriaos.pipelines import (
+    ObservationPipeline,
     EvidencePipeline,
+    ClaimPipeline,
     KnowledgePipeline,
     MemoryPipeline,
-    ObservationPipeline,
 )
+
 from memoriaos.repository import (
-    ClaimRepository,
+    ObservationRepository,
     EvidenceRepository,
+    ClaimRepository,
     KnowledgeRepository,
     MemoryRepository,
-    ObservationRepository,
 )
+
 from memoriaos.services import MemoryRetrievalService
 
 
