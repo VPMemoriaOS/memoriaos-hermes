@@ -1,7 +1,7 @@
 from memoriaos.context import MemoryContext
 from memoriaos.domain import Claim, Knowledge, Memory
 from memoriaos.repository import KnowledgeRepository
-
+from memoriaos.reasoning import ReasoningService
 
 class KnowledgePipeline:
     """
@@ -10,8 +10,13 @@ class KnowledgePipeline:
     Creates and stores a Knowledge artifact from a single Claim.
     """
 
-    def __init__(self, repository: KnowledgeRepository):
+    def __init__(
+        self,
+        repository: KnowledgeRepository,
+        reasoning_service: ReasoningService,
+    ):
         self._repository = repository
+        self._reasoning_service = reasoning_service
 
     def run(
         self,
@@ -20,11 +25,16 @@ class KnowledgePipeline:
     ) -> Knowledge:
         candidate_memories = self._collect_candidate_memories(context)
 
-        # Sprint 4 (S4-001):
-        # Candidate memories are intentionally not yet used.
-        # This stage establishes deterministic memory-aware execution
-        # while preserving existing behaviour.
-        _ = candidate_memories
+        reasoning_result = self._reasoning_service.reason(
+            claim,
+            candidate_memories,
+        )
+
+        # Sprint 4 (S4-005):
+        # The reasoning result is intentionally not yet used.
+        # Future Sprint 4 steps will incorporate it into
+        # knowledge construction.
+        _ = reasoning_result
 
         knowledge = Knowledge.from_claim(claim)
 
