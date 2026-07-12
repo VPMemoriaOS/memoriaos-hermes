@@ -76,8 +76,8 @@ def test_end_to_end_pipeline(tmp_path: Path) -> None:
     # Repository layout
     #
 
-    assert (repository_root / "Observation").exists()
-    assert (repository_root / "Evidence").exists()
-    assert (repository_root / "Claim").exists()
-    assert (repository_root / "Knowledge").exists()
-    assert (repository_root / "Memory").exists()
+    assert len(list((repository_root / ObservationRepository.ARTIFACT_DIR).glob("*.json"))) == 1
+    assert len(list((repository_root / EvidenceRepository.ARTIFACT_DIR).glob("*.json"))) == 1
+    assert len(list((repository_root / ClaimRepository.ARTIFACT_DIR).glob("*.json"))) == 1
+    assert len(list((repository_root / KnowledgeRepository.ARTIFACT_DIR).glob("*.json"))) == 1
+    assert len(list((repository_root / MemoryRepository.ARTIFACT_DIR).glob("*.json"))) == 1
