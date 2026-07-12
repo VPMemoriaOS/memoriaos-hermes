@@ -17,6 +17,7 @@ from memoriaos.repository import (
     ObservationRepository,
     EvidenceRepository,
     ClaimRepository,
+    KnowledgeRepository,
 )
 
 
@@ -55,7 +56,9 @@ def main() -> int:
         ClaimRepository(root)
     )
 
-    knowledge_pipeline = KnowledgePipeline()
+    knowledge_pipeline = KnowledgePipeline(
+        KnowledgeRepository(root)
+    )
 
     observation = observation_pipeline.run(unit)
 
