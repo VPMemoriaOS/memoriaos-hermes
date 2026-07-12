@@ -24,6 +24,12 @@ class ArtifactRepository:
         path = self._artifact_dir / f"{artifact.id}.json"
 
         with path.open("w", encoding="utf-8") as f:
-            json.dump(asdict(artifact), f, indent=2, ensure_ascii=False)
+            json.dump(
+                asdict(artifact),
+                f,
+                indent=2,
+                ensure_ascii=False,
+                default=str,
+            )
 
         return path
