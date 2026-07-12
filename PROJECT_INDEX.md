@@ -9,6 +9,7 @@ memoriaos/domain/
 - evidence.py
 - claim.py
 - knowledge.py
+- memory.py
 
 ## Pipelines
 
@@ -18,6 +19,7 @@ memoriaos/pipelines/
 - evidence_pipeline.py
 - claim_pipeline.py
 - knowledge_pipeline.py
+- memory_pipeline.py
 
 ## Repository
 
