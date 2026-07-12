@@ -73,11 +73,35 @@ def test_end_to_end_pipeline(tmp_path: Path) -> None:
     assert claim.object == "Prague"
 
     #
-    # Repository layout
+    # Persisted artifacts
     #
 
-    assert len(list((repository_root / ObservationRepository.ARTIFACT_DIR).glob("*.json"))) == 1
-    assert len(list((repository_root / EvidenceRepository.ARTIFACT_DIR).glob("*.json"))) == 1
-    assert len(list((repository_root / ClaimRepository.ARTIFACT_DIR).glob("*.json"))) == 1
-    assert len(list((repository_root / KnowledgeRepository.ARTIFACT_DIR).glob("*.json"))) == 1
-    assert len(list((repository_root / MemoryRepository.ARTIFACT_DIR).glob("*.json"))) == 1
+    assert len(
+        list(
+            (repository_root / ObservationRepository.ARTIFACT_DIR).glob("*.json")
+        )
+    ) == 1
+
+    assert len(
+        list(
+            (repository_root / EvidenceRepository.ARTIFACT_DIR).glob("*.json")
+        )
+    ) == 1
+
+    assert len(
+        list(
+            (repository_root / ClaimRepository.ARTIFACT_DIR).glob("*.json")
+        )
+    ) == 1
+
+    assert len(
+        list(
+            (repository_root / KnowledgeRepository.ARTIFACT_DIR).glob("*.json")
+        )
+    ) == 1
+
+    assert len(
+        list(
+            (repository_root / MemoryRepository.ARTIFACT_DIR).glob("*.json")
+        )
+    ) == 1
