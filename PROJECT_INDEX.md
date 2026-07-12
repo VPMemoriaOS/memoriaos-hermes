@@ -30,7 +30,31 @@ memoriaos/repository/
 - evidence_repository.py
 - claim_repository.py
 - knowledge_repository.py
+- memory_repository.py
+
+## Hydration
+
+memoriaos/hydration/
+
+- __init__.py
+- artifact_hydrator.py
+- claim_hydrator.py
+- knowledge_hydrator.py
+- memory_hydrator.py
+
+## Tests
+
+tests/
+
+- test_end_to_end_pipeline.py
+- test_traceability.py
+- test_golden_dataset.py
+- test_memory_query.py
+- test_memory_search.py
+- test_claim_hydration.py
 
 ## CLI
 
-scripts/memoria.py
+scripts/
+
+- memoria.py
