@@ -33,3 +33,15 @@ class ArtifactRepository:
             )
 
         return path
+
+    def load(self, artifact_id: str) -> dict[str, Any]:
+        """
+        Load an artifact by UUID.
+
+        Returns the JSON document as a dictionary.
+        """
+
+        path = self._artifact_dir / f"{artifact_id}.json"
+
+        with path.open("r", encoding="utf-8") as f:
+            return json.load(f)
