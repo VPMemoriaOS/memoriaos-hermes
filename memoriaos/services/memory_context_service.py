@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from memoriaos.context import MemoryContext
-from memoriaos.services import MemoryRetrievalService
+
+from .memory_retrieval_service import MemoryRetrievalService
 
 
 class MemoryContextService:
