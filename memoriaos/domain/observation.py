@@ -15,6 +15,8 @@ class Observation:
 
     id: UUID
 
+    compilation_unit_id: UUID
+
     created: datetime
 
     provenance: Provenance

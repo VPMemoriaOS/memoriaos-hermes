@@ -24,10 +24,6 @@ class ObservationPipeline:
         self._repository = repository
 
     def run(self, unit: CompilationUnit) -> Observation:
-        """
-        Execute the Observation pipeline.
-        """
-
         self._validate(unit)
 
         unit = self._canonicalize(unit)
@@ -68,6 +64,7 @@ class ObservationPipeline:
 
         return Observation(
             id=uuid.uuid4(),
+            compilation_unit_id=unit.id,
             created=now,
             provenance=provenance,
             text=unit.text,
