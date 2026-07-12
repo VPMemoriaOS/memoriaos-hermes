@@ -9,5 +9,9 @@ description = "Hermes adapter for MemoriaOS"
 readme = "README.md"
 requires-python = ">=3.11"
 
+optional-dependencies.dev = [
+    "pytest>=8.2",
+]
+
 [tool.setuptools.packages.find]
 include = ["memoriaos*"]
