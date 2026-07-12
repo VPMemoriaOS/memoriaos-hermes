@@ -49,6 +49,7 @@ class ObservationPipeline:
     @staticmethod
     def _canonicalize(unit: CompilationUnit) -> CompilationUnit:
         return CompilationUnit(
+            id=unit.id,
             source=unit.source,
             source_id=unit.source_id.strip(),
             text=unit.text.strip(),
