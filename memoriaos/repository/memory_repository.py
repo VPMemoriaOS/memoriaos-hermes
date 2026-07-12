@@ -1,5 +1,4 @@
-from pathlib import Path
-
+from memoriaos.hydration import MemoryHydrator
 from memoriaos.repository.artifact_repository import ArtifactRepository
 
 
@@ -10,13 +9,15 @@ class MemoryRepository(ArtifactRepository):
 
     ARTIFACT_DIR = "Memory"
 
-    def search(self) -> list[dict]:
-        """
-        Return all stored Memory artifacts.
+    def __init__(self, repository_root):
+        super().__init__(repository_root)
+        self._hydrator = MemoryHydrator()
 
-        Results are ordered deterministically by filename.
-        """
+    def load(self, artifact_id: str):
+        document = super().load(artifact_id)
+        return self._hydrator.hydrate(document)
 
+    def search(self):
         result = []
 
         for path in sorted(self._artifact_dir.glob("*.json")):
