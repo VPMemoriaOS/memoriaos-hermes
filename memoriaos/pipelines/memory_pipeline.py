@@ -1,12 +1,18 @@
 from memoriaos.domain import Knowledge, Memory
+from memoriaos.repository import MemoryRepository
 
 
 class MemoryPipeline:
     """
-    Initial implementation of MEMORY-PIPELINE-001.
+    MEMORY-PIPELINE-002
 
-    Creates a Memory artifact from a single Knowledge artifact.
+    Creates and stores a Memory artifact from a single Knowledge artifact.
     """
 
+    def __init__(self, repository: MemoryRepository):
+        self._repository = repository
+
     def run(self, knowledge: Knowledge) -> Memory:
-        return Memory.from_knowledge(knowledge)
+        memory = Memory.from_knowledge(knowledge)
+        self._repository.save(memory)
+        return memory
