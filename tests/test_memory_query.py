@@ -52,5 +52,5 @@ def test_memory_repository_load(tmp_path):
 
     loaded = memory_repository.load(str(memory.id))
 
-    assert loaded["id"] == str(memory.id)
-    assert len(loaded["knowledge"]) == 1
+    assert loaded.id == memory.id
+    assert len(loaded.knowledge) == 1

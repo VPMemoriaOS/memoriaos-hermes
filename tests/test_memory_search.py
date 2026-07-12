@@ -79,7 +79,7 @@ def test_memory_repository_search(tmp_path):
 
     assert len(result) == 2
 
-    ids = {item["id"] for item in result}
+    ids = {item.id for item in result}
 
-    assert str(first.id) in ids
-    assert str(second.id) in ids
+    assert first.id in ids
+    assert second.id in ids
