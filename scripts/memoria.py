@@ -11,6 +11,7 @@ from memoriaos.pipelines import (
     ObservationPipeline,
     EvidencePipeline,
     ClaimPipeline,
+    KnowledgePipeline,
 )
 from memoriaos.repository import (
     ObservationRepository,
@@ -54,17 +55,22 @@ def main() -> int:
         ClaimRepository(root)
     )
 
+    knowledge_pipeline = KnowledgePipeline()
+
     observation = observation_pipeline.run(unit)
 
     evidence = evidence_pipeline.run(observation)
 
     claim = claim_pipeline.run(evidence)
 
+    knowledge = knowledge_pipeline.run(claim)
+
     print()
     print("========== RESULT ==========")
     print(f"Observation : {observation.id}")
     print(f"Evidence    : {evidence.id}")
     print(f"Claim       : {claim.id}")
+    print(f"Knowledge   : {knowledge.id}")
     print()
     print(f"Subject     : {claim.subject}")
     print(f"Predicate   : {claim.predicate}")
